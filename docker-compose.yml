@@ -1,0 +1,43 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  # Serviço do Servidor Web (Nginx)
+  nginx:
+    image: nginx:latest
+    container_name: social_nginx
+    ports:
+      - "8080:80" # Acessaremos o projeto em http://localhost:8080
+    volumes:
+      - ./src:/var/www/html # Sincroniza o código da nossa aplicação
+      - ./nginx:/etc/nginx/conf.d # Arquivo de configuração do Nginx
+    depends_on:
+      - php
+
+  # Serviço da Aplicação (PHP)
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile # Aponta para o nosso Dockerfile
+    container_name: social_php
+    volumes:
+      - ./src:/var/www/html # Sincroniza o código da nossa aplicação
+
+  # Serviço do Banco de Dados (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: social_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: rede_social
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306" # Expõe a porta do MySQL para o seu computador (opcional)
+    volumes:
+      - db_data:/var/lib/mysql # Garante que os dados do banco persistam
+
+volumes:
+  db_data:
