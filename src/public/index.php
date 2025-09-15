@@ -10,13 +10,14 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // Importa as classes que vamos usar
 use App\Core\Database;
+use App\Controllers\UsuarioController;
 use Bramus\Router\Router;
 
 // Cria a instância do roteador
 $router = new Router();
 
 // Define um namespace para os Controllers (opcional, mas boa prática)
-// $router->setNamespace('\App\Controllers');
+ //$router->setNamespace('\App\Controllers');
 
 // --- DEFINIÇÃO DAS ROTAS ---
 
@@ -34,6 +35,14 @@ $router->get('/ping', function() {
     }
 });
 
+// Define um "agrupamento" de rotas para a API
+$router->mount('/api', function() use ($router) {
+
+    // Rota: GET /api/usuarios
+    // Mapeia para o método 'index' da classe 'UsuarioController'
+    $router->get('/usuarios', UsuarioController::class . '@index');
+
+});
 // Rota para a raiz da aplicação
 $router->get('/', function() {
     echo 'Bem-vindo à API da Rede Social!';

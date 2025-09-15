@@ -23,6 +23,7 @@ services:
     container_name: social_php
     volumes:
       - ./src:/var/www/html # Sincroniza o código da nossa aplicação
+      - ./php/dev.ini:/usr/local/etc/php/conf.d/zz-opcache.ini
 
   # Serviço do Banco de Dados (MySQL)
   db:
