@@ -7,23 +7,31 @@ namespace Composer\Autoload;
 class ComposerStaticInit0aef206da643e43870de127a40ca309f
 {
     public static $prefixLengthsPsr4 = array (
-        'A' => 
+        'F' =>
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
+        'A' =>
         array (
             'App\\' => 4,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'App\\' => 
+        'Firebase\\JWT\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'App\\' =>
         array (
             0 => __DIR__ . '/../..' . '/',
         ),
     );
 
     public static $prefixesPsr0 = array (
-        'B' => 
+        'B' =>
         array (
-            'Bramus' => 
+            'Bramus' =>
             array (
                 0 => __DIR__ . '/..' . '/bramus/router/src',
             ),

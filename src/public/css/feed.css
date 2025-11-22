@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
+
+/* RESET GERAL */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+
+body {
+    background-color: #fff; /* Twitter antigo era fundo branco ou cinza muito claro */
+    color: #14171a;
+}
+
+/* --- HEADER SUPERIOR --- */
+.main-header {
+    background: #fff;
+    border-bottom: 1px solid #e1e8ed;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 60px;
+}
+
+.header-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    padding: 0 20px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: #512da8; /* Mantendo a cor roxa da sua marca */
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info {
+    text-align: right;
+    line-height: 1.2;
+}
+
+.user-info .name {
+    display: block;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.user-info .username {
+    font-size: 13px;
+    color: #657786;
+}
+
+.btn-logout {
+    background: none;
+    border: 1px solid #e1e8ed;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #e0245e; /* Cor de alerta para sair */
+    transition: 0.2s;
+}
+.btn-logout:hover { background: #ffebee; }
+
+/* --- LAYOUT GRID DE 3 COLUNAS --- */
+.layout-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 220px 600px 1fr; /* Menu | Feed | Extras */
+    gap: 20px;
+    min-height: 100vh;
+    padding-top: 10px;
+}
+
+/* MENU LATERAL */
+.sidebar .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: sticky;
+    top: 80px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #14171a;
+    font-weight: 700;
+    font-size: 19px;
+    padding: 12px 20px;
+    border-radius: 30px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-links a:hover { background-color: #f5f8fa; color: #512da8; }
+.nav-links a.active { color: #512da8; }
+
+/* --- COLUNA CENTRAL (FEED) --- */
+.feed-column {
+    border-left: 1px solid #e1e8ed;
+    border-right: 1px solid #e1e8ed;
+    min-height: 100vh;
+}
+
+/* CAIXA DE TWEET */
+.tweet-box {
+    padding: 15px;
+    border-bottom: 10px solid #e6ecf0; /* Barra grossa separando */
+}
+
+.tweet-input-area {
+    display: flex;
+    gap: 10px;
+}
+
+.avatar-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #ccc;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/149/149071.png');
+    background-size: cover;
+    flex-shrink: 0;
+}
+
+.tweet-box textarea {
+    width: 100%;
+    border: none;
+    resize: none;
+    font-size: 19px;
+    outline: none;
+    padding: 10px 0;
+    min-height: 60px;
+}
+
+.tweet-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-left: 58px; /* Alinha com o texto */
+}
+
+.tweet-actions .icons {
+    color: #512da8;
+    display: flex;
+    gap: 15px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.btn-tweet {
+    background-color: #512da8;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 15px;
+    opacity: 0.5; /* Desativado visualmente até digitar (simulado) */
+    transition: 0.2s;
+}
+.btn-tweet:hover { background-color: #4527a0; opacity: 1; }
+
+/* --- POSTS INDIVIDUAIS --- */
+.post-card {
+    padding: 15px;
+    border-bottom: 1px solid #e1e8ed;
+    display: flex;
+    gap: 10px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.post-card:hover { background-color: #f5f8fa; }
+
+.post-content-wrapper { width: 100%; }
+
+.post-header {
+    display: flex;
+    gap: 5px;
+    font-size: 15px;
+    margin-bottom: 3px;
+}
+
+.post-author { font-weight: 700; color: #14171a; }
+.post-handle, .post-date { color: #657786; }
+
+.post-body {
+    font-size: 15px;
+    color: #14171a;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    max-width: 80%;
+    color: #657786;
+    font-size: 14px;
+}
+
+.post-actions i:hover { color: #512da8; }
+
+/* WIDGETS DIREITA */
+.widget-box {
+    background: #f5f8fa;
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+.widget-box h3 { font-size: 18px; margin-bottom: 10px; font-weight: 800; }

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Usuario;
+use Firebase\JWT\JWT;
 
 /**
  * Controller para gerenciar as operações relacionadas a usuários.
@@ -65,25 +66,34 @@ class UsuarioController
 
         if (!isset($dados->email) || !isset($dados->senha)) {
             http_response_code(400);
-            echo json_encode(['erro' => 'E-mail e senha são obrigatórios']);
+            echo json_encode(['erro' => 'E-mail e senha são obrigatórios.']);
             return;
         }
 
-        $usuario = Usuario::buscarPorEmail($dados->email);
+        $usuario = \App\Models\Usuario::buscarPorEmail($dados->email);
 
-        // Se o usuário não foi encontrado OU a senha não corresponder...
-        // password_verify() compara a senha enviada com o hash salvo no banco.
         if (!$usuario || !password_verify($dados->senha, $usuario['senha'])) {
-            http_response_code(401); // Unauthorized
-            echo json_encode(['erro' => 'E-mail ou senha inválidos']);
+            http_response_code(401);
+            echo json_encode(['erro' => 'E-mail ou senha inválidos.']);
             return;
         }
 
-        // Remove o hash da senha da resposta por segurança.
-    unset($usuario['senha']);
+        // --- AQUI ESTÁ O SEGREDO ---
+        // Precisamos incluir o 'nome' dentro de 'data'
+        $chaveSecreta = 'sua_chave_secreta_super_longa_e_segura';
+        $payload = [
+            'iat' => time(),
+            'exp' => time() + 3600,
+            'data' => [
+                'id_usuario' => $usuario['id_usuario'],
+                'nome' => $usuario['nome'],  // <--- ISTO É OBRIGATÓRIO
+                'email' => $usuario['email'] // Vamos mandar o e-mail também
+            ]
+        ];
 
-    http_response_code(200);
-    // Retorna os dados do usuário como JSON.
-    echo json_encode($usuario);
+        $token = JWT::encode($payload, $chaveSecreta, 'HS256');
+
+        http_response_code(200);
+        echo json_encode(['token' => $token]);
     }
 }

@@ -3,14 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feed</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Página Inicial / Nexus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="css/feed.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Bem-vindo(a), <span id="nome-usuario"></span>!</h1>
-        <p>Seu e-mail cadastrado é: <span id="email-usuario"></span>.</p>
-        <p style="margin-top: 2rem;"><button id="logout-btn">Sair</button></p>
+
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fa-solid fa-circle-nodes"></i> Nexus
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-info">
+                    <span class="name" id="nome-usuario">Carregando...</span>
+                    <span class="username" id="handle-usuario">@usuario</span>
+                </div>
+                <button id="logout-btn" class="btn-logout" title="Sair">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-container">
+        <aside class="sidebar">
+            <nav class="nav-links">
+                <a href="#" class="active"><i class="fa-solid fa-house"></i> Início</a>
+                <a href="#"><i class="fa-solid fa-hashtag"></i> Explorar</a>
+                <a href="#"><i class="fa-regular fa-bell"></i> Notificações</a>
+                <a href="#"><i class="fa-regular fa-envelope"></i> Mensagens</a>
+                <a href="#"><i class="fa-regular fa-user"></i> Perfil</a>
+            </nav>
+        </aside>
+
+        <main class="feed-column">
+            <div class="tweet-box">
+                <form id="post-form">
+                    <div class="tweet-input-area">
+                        <div class="avatar-placeholder"></div>
+                        <textarea name="conteudo" placeholder="O que está a acontecer?" required></textarea>
+                    </div>
+                    <div class="tweet-actions">
+                        <div class="icons">
+                            <i class="fa-regular fa-image"></i>
+                            <i class="fa-solid fa-list-ul"></i>
+                            <i class="fa-regular fa-face-smile"></i>
+                        </div>
+                        <button type="submit" class="btn-tweet">Publicar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="feed-content">
+                </div>
+        </main>
+        
+        <aside class="widgets">
+            <div class="widget-box">
+                <h3>Novidades no Nexus</h3>
+                <p style="color:#777; font-size:13px; margin-top:10px;">Bem-vindo à sua nova rede social. Conecte-se com o mundo.</p>
+            </div>
+        </aside>
     </div>
 
     <script src="js/feed.js"></script>

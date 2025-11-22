@@ -7,7 +7,8 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "bramus/router": "*"
+        "bramus/router": "*",
+        "firebase/php-jwt": "^6.11"
     },
     "autoload": {
         "psr-4": {

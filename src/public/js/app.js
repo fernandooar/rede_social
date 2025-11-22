@@ -1,90 +1,125 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    const container = document.getElementById('container');
+    const registerBtn = document.getElementById('register');
+    const loginBtn = document.getElementById('login');
+    
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
-    const loginToggle = document.getElementById('login-toggle');
-    const registerToggle = document.getElementById('register-toggle');
-    const feedbackMessage = document.getElementById('feedback-message');
+    
+    const msgLogin = document.getElementById('msg-login');
+    const msgRegister = document.getElementById('msg-register');
 
-    const toggleForms = (showLogin) => {
-        if (showLogin) {
-            loginForm.classList.add('active');
-            registerForm.classList.remove('active');
-            loginToggle.classList.add('active');
-            registerToggle.classList.remove('active');
-        } else {
-            loginForm.classList.remove('active');
-            registerForm.classList.add('active');
-            loginToggle.classList.remove('active');
-            registerToggle.classList.add('active');
-        }
-        feedbackMessage.style.display = 'none';
-    };
-
-    loginToggle.addEventListener('click', () => toggleForms(true));
-    registerToggle.addEventListener('click', () => toggleForms(false));
-
-    const showFeedback = (message, isError) => {
-        feedbackMessage.textContent = message;
-        feedbackMessage.className = 'feedback';
-        feedbackMessage.classList.add(isError ? 'error' : 'success');
-    };
-
-    loginForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-
-    const formData = new FormData(loginForm);
-    const data = Object.fromEntries(formData.entries());
-
-    try {
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
+    // --- ANIMAÇÃO DO SLIDER ---
+    if(registerBtn && loginBtn && container) {
+        registerBtn.addEventListener('click', () => {
+            container.classList.add("active");
+            limparMensagens();
         });
 
-        const result = await response.json();
-
-        if (response.ok) {
-            // --- ALTERAÇÃO AQUI ---
-            // 'result' agora contém os dados do usuário (id, nome, email).
-
-            // Salvamos o objeto do usuário no sessionStorage.
-            // JSON.stringify é necessário porque o storage só guarda texto.
-            sessionStorage.setItem('usuarioLogado', JSON.stringify(result));
-
-            // Redireciona para o feed.
-            window.location.href = 'feed.html';
-
-        } else {
-            showFeedback(result.erro, true);
-        }
-    } catch (error) {
-        showFeedback('Erro de conexão. Tente novamente.', true);
+        loginBtn.addEventListener('click', () => {
+            container.classList.remove("active");
+            limparMensagens();
+        });
     }
-});
 
-    registerForm.addEventListener('submit', async (event) => { // <-- ASYNC AQUI
-        event.preventDefault();
+    function limparMensagens() {
+        if(msgLogin) { msgLogin.textContent = ''; msgLogin.className = 'message'; }
+        if(msgRegister) { msgRegister.textContent = ''; msgRegister.className = 'message'; }
+    }
 
-        const formData = new FormData(registerForm);
-        const data = Object.fromEntries(formData.entries());
-
-        try {
-            const response = await fetch('/api/usuarios', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            if (response.ok) {
-                showFeedback(result.mensagem, false);
-                setTimeout(() => toggleForms(true), 2000);
-            } else {
-                showFeedback(result.erro, true);
-            }
-        } catch (error) {
-            showFeedback('Erro de conexão. Tente novamente.', true);
+    function mostrarMensagem(elemento, texto, tipo) {
+        if(elemento) {
+            elemento.textContent = texto;
+            elemento.className = 'message ' + tipo;
         }
-    });
+    }
+
+    // --- FUNÇÃO ROBUSTA PARA LER O TOKEN ---
+    function parseJwt(token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            console.error("Erro ao decodificar:", e);
+            return null;
+        }
+    }
+
+    // --- LOGIN ---
+    if(loginForm) {
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(loginForm);
+            const data = Object.fromEntries(formData.entries());
+
+            mostrarMensagem(msgLogin, 'Autenticando...', '');
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    mostrarMensagem(msgLogin, 'Login OK! Redirecionando...', 'success');
+                    
+                    localStorage.setItem('jwt_token', result.token);
+
+                    // Decodifica e salva os dados do usuário
+                    const decoded = parseJwt(result.token);
+                    
+                    if (decoded && decoded.data) {
+                        // Salva exatamente o objeto { id_usuario: 1, nome: "Fernando" }
+                        sessionStorage.setItem('usuarioLogado', JSON.stringify(decoded.data));
+                    } else {
+                        // Fallback de segurança
+                        sessionStorage.setItem('usuarioLogado', JSON.stringify({ nome: 'Usuário' }));
+                    }
+
+                    setTimeout(() => { window.location.href = 'feed.html'; }, 1000);
+                } else {
+                    mostrarMensagem(msgLogin, result.erro || 'Dados incorretos.', 'error');
+                }
+            } catch (error) {
+                mostrarMensagem(msgLogin, 'Erro de conexão.', 'error');
+            }
+        });
+    }
+
+    // --- CADASTRO ---
+    if(registerForm) {
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(registerForm);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/usuarios', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                
+                const result = await response.json();
+
+                if (response.ok) {
+                    mostrarMensagem(msgRegister, 'Sucesso! Faça login.', 'success');
+                    registerForm.reset();
+                    setTimeout(() => { container.classList.remove("active"); }, 1500);
+                } else {
+                    mostrarMensagem(msgRegister, result.erro || 'Erro ao cadastrar.', 'error');
+                }
+            } catch (error) {
+                mostrarMensagem(msgRegister, 'Erro de conexão.', 'error');
+            }
+        });
+    }
 });
